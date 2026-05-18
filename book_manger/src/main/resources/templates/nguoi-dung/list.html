@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Người dùng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI'; background-color: #f5f5f5; }
+        .navbar-custom { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .sidebar { background-color: #fff; padding: 20px; border-radius: 8px; }
+        .sidebar a { display: block; padding: 12px 15px; margin: 5px 0; color: #333; text-decoration: none; border-radius: 5px; }
+        .sidebar a:hover, .sidebar a.active { background-color: #667eea; color: white; }
+        .content { background-color: #fff; padding: 20px; border-radius: 8px; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; }
+        .table { background: white; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="/">📚 Thư viện sách</a>
+    </div>
+</nav>
+
+<div class="container-fluid mt-4 mb-4">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="sidebar">
+                <h5 class="mb-4">Menu</h5>
+                <a href="/">Dashboard</a>
+                <a href="/sach">Quản lý sách</a>
+                <a href="/phieu-muon">Phiếu mượn</a>
+                <a href="/nguoi-dung" class="active">Người dùng</a>
+                <a href="/danh-muc">Danh mục</a>
+                <a href="/don-hang">Đơn hàng</a>
+            </div>
+        </div>
+
+        <div class="col-md-10">
+            <div class="content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>👥 Người dùng</h2>
+                    <a href="/nguoi-dung/create" class="btn btn-primary">+ Thêm người dùng</a>
+                </div>
+
+                <div th:if="${message}" class="alert alert-success alert-dismissible fade show">
+                    <span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <form method="get" class="row g-2">
+                            <div class="col-md-8">
+                                <input type="text" name="hoTen" class="form-control" placeholder="Tìm theo tên" th:value="${hoTen}">
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên đăng nhập</th>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>SĐT</th>
+                            <th>Vai trò</th>
+                            <th>Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="nd : ${nguoiDungPage.content}">
+                            <td th:text="${nd.id}">-</td>
+                            <td th:text="${nd.tenDangNhap}">-</td>
+                            <td th:text="${nd.hoTen}">-</td>
+                            <td th:text="${nd.email}">-</td>
+                            <td th:text="${nd.soDienThoai}">-</td>
+                            <td>
+                                <span th:each="role : ${nd.vaiTroList}" class="badge bg-secondary" th:text="${role}">-</span>
+                            </td>
+                            <td>
+                                <a th:href="@{/nguoi-dung/{id}/edit(id=${nd.id})}" class="btn btn-sm btn-warning">Sửa</a>
+                                <form th:action="@{/nguoi-dung/{id}/delete(id=${nd.id})}" method="post" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Chắc chắn xóa?')">Xóa</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${!nguoiDungPage.hasPrevious() ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/nguoi-dung(page=${nguoiDungPage.number - 1})}">Trước</a>
+                        </li>
+                        <li class="page-item active">
+                            <span class="page-link" th:text="${nguoiDungPage.number + 1}">1</span>
+                        </li>
+                        <li class="page-item" th:classappend="${!nguoiDungPage.hasNext() ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/nguoi-dung(page=${nguoiDungPage.number + 1})}">Sau</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
